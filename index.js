@@ -22,16 +22,17 @@ var http = require("http"), // node http模块引入
     cheerio = require("cheerio"), // 在服务端使用jQuery..
     superagent = require("superagent");// 简化版ajax api
 
-request
-    .post('/api/pet')
-    .send({ name: 'Manny', species: 'cat' })
-    .set('X-API-Key', 'foobar')
+superagent
+    .post('http://localhost:8080/ajax_post')
+    .send({ name:'Manny', age:'21', sex:'女' })
+    //.set('X-API-Key', 'foobar')
+    .set('Content-type','application/x-www-form-urlencoded')
     .set('Accept', 'application/json')
     .end(function(err, res){
     // Calling the end function will send the request
         if(err){
             console.log(err);
         }else{
-            console.log(res);
+            console.log(JSON.parse(res.text).info);
         }
 });
