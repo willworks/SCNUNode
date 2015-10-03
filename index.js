@@ -18,13 +18,24 @@
  * superagent-cache - superagent with built-in, flexible caching
  * 
  */
+
+ /**
+  * 教务处验证码接口：http://jwc.scnu.edu.cn/CheckCode.aspx
+  */
+
 var http = require("http"), // node http模块引入
     cheerio = require("cheerio"), // 在服务端使用jQuery..
-    superagent = require("superagent");// 简化版ajax api
+    superagent = require("superagent"),// 简化版ajax api
+    fs = require("fs");
 
 superagent
-    .post('http://localhost:8080/ajax_post')
-    .send({ name:'Manny', age:'21', sex:'女' })
+    .post('http://jwc.scnu.edu.cn/access_token')
+    .send({
+    	__VIEWSTATE:'dDwyODE2NTM0OTg7Oz4W5FwUsee1KqGNW4fFCJkBIcFXCQ==',
+    	txtUserName:'20122100012',
+    	TextBox2:'kobe6690568zhj@',
+    	txtSecretCode:'xya7'
+    })
     //.set('X-API-Key', 'foobar')
     .set('Content-type','application/x-www-form-urlencoded')
     .set('Accept', 'application/json')
@@ -33,6 +44,20 @@ superagent
         if(err){
             console.log(err);
         }else{
-            console.log(JSON.parse(res.text).info);
+            //console.log(JSON.parse(res.text).info);
+            console.log(res.text);
+            // 文件写入操作
+            fs.open('data/res.html', 'a', 0644, function(err,fd){
+            	if (err) {
+            		throw err;
+            	}
+            	else{
+            		fs.write(fd, res.text, function(err){
+            			if (err){
+            				throw err;
+            			}
+            		});
+            	}
+            });
         }
 });
